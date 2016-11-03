@@ -19,6 +19,9 @@ mult2(range(10 ** 100))
 from functools import reduce
 def mult3(numberlist):
     return reduce(lambda x, y: x * y, numberlist, 1)
+    
+    
+    
 
 # Question 5
 mult1([1.0, 2, 3.0, 10])
