@@ -1,9 +1,3 @@
-% This buffer is for notes you don't want to save.
-% If you want to create a file, visit that file with C-x C-f,
-% then enter the text in that file's own buffer.
-%:- set_prolog_stack(global, limit(100 000 000 000)).
-%:- set_prolog_stack(trail,  limit(20 000 000 000)).
-%:- set_prolog_stack(local,  limit(2 000 000 000)).
 person(jake).
 person(jill).
 person(john).
@@ -19,8 +13,7 @@ knows(jake, jill).
 knows(jill, john).
 knows(john, joan).
 knows(joan, jake).
-knows(X,X).
-
+knows(X,X) :- person(X).
 
 place(aberdeen).
 place(dundee).
@@ -32,8 +25,7 @@ distance(aberdeen, dundee, 60).
 distance(dundee, edinburgh, 60).
 distance(standrews, edinburgh, 60).
 distance(dundee, standrews, 10).
-% distance(dundee, aberdeen,60). %Superfluous, serves only to give
-% duplicates
+% distance(dundee, aberdeen,60). %Superfluous, serves only to give duplicates
 distance(standrews, kirkcaldy, 30).
 distance(kirkcaldy, edinburgh, 35).
 distance(glasgow, edinburgh, 45).
