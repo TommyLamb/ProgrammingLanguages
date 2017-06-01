@@ -1,0 +1,103 @@
+(* F28PL - Programming Languages *);
+(* Question F (Strings and chars) *);
+(* Tommy Lamb *);
+(* H00217505 *);
+(* *);
+(* *);
+(* Question 1 *);
+fun strip [] = [] 
+  | strip (head::tail) =
+	if Char.isAlpha head then
+		(head::tail)
+	else
+		strip tail;
+(* *);
+strip [#"a",#"b",#"c",#","];
+strip [#",",#"a",#"b",#"c",#","];
+strip [];
+strip [#",",#",",#"/",#"a",#"b",#"c",#","];
+(* *);
+(* *);
+(* Question 2 *);
+fun next [] = ([],[])
+  | next (head::tail) = 
+	if Char.isAlpha head then
+		let 
+		val (word,list) = next tail 
+		in 
+		(head::word,list) 
+		end
+	else
+		([],(head::tail));
+(* *);
+next [#"t",#"h",#"e",#" ",#"c",#"a",#"t",#" "];
+next [#"t",#"h",#"e",#" ",#"c",#"a",#"t",#" ",#"h",#"a",#"t"];
+next [];
+next [#",",#"a"];
+(* *);
+(* *);
+(* Question 3 *);
+fun words [] = []
+  | words list = 
+	let  
+	val (word,tail) = next(strip(list))
+	in 
+	[implode word]@(words tail) 
+	end;
+(* *);
+words [#"t",#"h",#"e",#" ",#"c",#"a",#"t",#" ",#"h",#"a",#"t"];
+words [];
+words [#",",#"a"];
+(* The reason for the "" string at the end is because implode [] returns "". And next returns [] when called on the empty list *);
+(* *);
+(* *);
+(* Question 4 *);
+fun incCount (word:string) [] = [(word,1)]
+  | incCount word (head::tail) = 
+	if #1 head = word then
+		(word,(#2 head)+1)::tail
+	else if word < (#1 head) then
+		(word,1)::head::tail
+	else
+		head::(incCount word tail);
+(* *);
+incCount "sat" [("cat",1),("the",1)];
+incCount "the" [("cat",1),("mat",1),("on",1),("sat",1),("the",1)];
+incCount "alpha" [("alpha",1),("beta",1)];
+incCount "alpha" [("beta",1)];
+incCount "beta" [("beta",1)];
+incCount "beta" [("alpha",1),("gamma",2)];
+incCount "gamma" [("alpha",1),("gamma",2)];
+incCount "alpha" [];
+(* *);
+(* *);
+(* Question 5 *);
+fun counts [] list = list
+  | counts (head::tail) list = counts (tail) (incCount head list);
+(* *);
+counts ["the","cat","sat","on","the","mat"] [];
+counts [] [];
+counts ["alpha"] [];
+counts ["alpha","Alpha","alpHa"] [];
+(* *);
+(* *);
+(* As questions 6 and 7 are IO based, no test cases are given *);
+(* Question 6 *);
+fun Q6 file = 
+	let 
+	val filestream = (TextIO.openIn(file)) 
+	in 
+		(counts(words(explode(TextIO.inputAll(filestream)))) []) 
+		before 
+		(TextIO.closeIn(filestream)) 
+	end;
+(* *);
+(* *);
+(* Question 7 *);
+fun Q7 [] = ()
+  | Q7 ((head:string*int)::tail) = 
+	TextIO.output(TextIO.stdOut,((#1 head)^"\t"^Int.toString(#2 head)^"\r\n")) 
+	before 
+	(Q7 tail);
+(* *);
+(* End of Answers *);

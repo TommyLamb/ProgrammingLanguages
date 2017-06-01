@@ -1,0 +1,24 @@
+html, body{
+   margin:0px;
+   height:100vh;
+   background-color:rgb(43,22,79);
+   }
+   
+  #image {
+
+  padding: 0px;
+  margin:0px;
+  }
+  
+  #answers {
+  white-space:nowrap; 			/*"Code should be written on one long line without linebreaks..."*/
+  font-family:"Comic Sans MS", cursive, sans-serif; 			/*"preferably in Comic Sans..."*/
+  font-size:8pt;																	/*"8pt"*/
+  margin: 5% 0vw 0% 2%;
+  color: rgb(255,255,255);
+  display:none;
+  }
+  
+    gpx {
+  display:none;
+  }

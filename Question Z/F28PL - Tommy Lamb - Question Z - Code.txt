@@ -1,0 +1,85 @@
+(* F28PL - Programming Languages *);
+(* Question Z *);
+(* Tommy Lamb *);
+(* H00217505 *);
+(* *);
+(* *);
+(* Question 1 *);
+(* Part A *);
+fun bubbleelement [] = []
+  | bubbleelement (head::[]) = [head]
+  | bubbleelement (head::second::tail) =
+    if head>second then
+      second::(bubbleelement (head::tail))
+    else
+      head::(bubbleelement (second::tail));
+(* *)
+open List;
+fun bubblesort [] = []
+  | bubblesort (head::tail) = 
+    let 
+      val bubbledlist = bubbleelement(head::tail)
+    in
+      bubblesort(take(bubbledlist,(length(bubbledlist)-1)))@[last(bubbledlist)]
+    end;
+(* *);
+(* Part B *);
+fun partition pivot [] = ([], [], [])
+  | partition pivot (head::tail) = 
+	let 
+		val (less, equal, greater) = partition pivot tail 
+	in
+		if head<pivot then
+			(head::less, equal, greater)
+		else if head>pivot then
+			(less, equal, head::greater)
+		else
+			(less, head::equal, greater)
+	end;
+(* *);
+fun quicksort [] = []
+  | quicksort (head::tail) = 
+	let 
+		val (less, equal, greater) = partition head (head::tail) 
+	in
+		(quicksort(less))@equal@(quicksort(greater))
+	end;
+(* *);
+(* *);
+(* Question 2*);
+fun toFun int = 
+	let 
+		val filestream = (TextIO.openOut "F28PL - QUESTION Z - DATA")
+	in
+		(fn x => x) before (TextIO.output(filestream, Int.toString int) before TextIO.closeOut filestream)
+	end;
+(* *);
+fun fromFun (f:'a->'a) = 
+	let 
+		val filestream = (TextIO.openIn "F28PL - QUESTION Z - DATA")
+	in
+		valOf(Int.fromString (TextIO.inputAll filestream)) before TextIO.closeIn filestream
+	end;
+(* *);
+(* *);
+(* Question 3 *);
+fun Q3 (f:('a -> 'b) -> 'b) = raise Match;
+(* *);
+(* *);
+(* Question 4 *);
+fun moveTower 0 (pegA, pegB, pegC) = (drop (pegA,1),(hd pegA)::pegB, pegC)
+  | moveTower x (pegA, pegB, pegC) = 
+	let 
+		val (pegA1, pegC1, pegB1) = moveTower (x-1) (pegA, pegC, pegB)
+		val (pegA2, pegB2, pegC2) = moveTower 0 (pegA1, pegB1, pegC1)
+		val (pegC3, pegB3, pegA3) = moveTower (x-1) (pegC2, pegB2, pegA2)
+	in
+		(pegA3, pegB3, pegC3)
+	end;
+(* *);
+fun towerOfHanoi [] = ([],[],[])
+  | towerOfHanoi initialTower = moveTower ((length initialTower)-1) (initialTower, [], []);
+(* *);
+fun hanoiWrap () = towerOfHanoi [0,1,2,3,4,5,6,7,8];
+(* *);
+(* End of Answers *);

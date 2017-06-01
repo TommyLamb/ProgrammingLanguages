@@ -1,0 +1,190 @@
+(* F28PL - Programming Languages *);
+(* Question G (Programming) *);
+(* Tommy Lamb *);
+(* H00217505 *);
+(* *);
+(* *);
+(* Question 1 *);
+(* A *);
+fun xor (x, y) = (x orelse y) andalso (not (x andalso y));
+infix xor;
+(* *);
+true xor true;
+true xor false;
+false xor true;
+false xor false;
+(* *);
+(* B *);
+fun bitadder x y carry = ((( x xor y) xor carry), (x andalso y) orelse (carry andalso (x xor y)));
+(* *);
+bitadder false false false;
+bitadder true false false;
+bitadder false true false;
+bitadder false false true;
+bitadder true true false;
+bitadder true false true;
+bitadder true true true;
+bitadder false true true;
+(* *);
+(* C *);
+fun adder [] [] carryin result = result@[carryin]
+  | adder [] (head::tail) carryin result =
+		let 
+			val (sum, carryout) = bitadder false head carryin 
+		in
+			adder [] tail carryout (result@[sum])
+		end
+  | adder (head::tail) [] carryin result = 
+		let 
+			val (sum, carryout) = bitadder head false carryin 
+		in
+			adder tail [] carryout (result@[sum])
+		end
+  | adder (headx::tailx) (heady::taily) carryin result = 
+		let 
+			val (sum, carryout) = bitadder headx heady carryin 
+		in
+			adder tailx taily carryout (result@[sum])
+		end;
+(* *);
+adder [true] [false] false [];
+adder [true,true] [false,false] false [];
+adder [true,true] [true,false] false [];
+adder [true,true] [true,true] false [];
+adder [true,true, false, true] [false,true] false [];
+adder [] [] false [];
+adder [true] [] false [];
+(* *);
+(* D *);
+fun binaryaddition listx listy = adder listx listy false [];
+(* *);
+binaryaddition [true] [true];
+binaryaddition [false] [true];
+binaryaddition [true,true,true] [false, true, true];
+binaryaddition [true,true,true,false,true,true] [true, true];
+(* *);
+(* *);
+(* Question 2 *);
+(* A *);
+fun calcmax [] maxvalue = maxvalue
+  | calcmax (head::tail) maxvalue = 
+      if head>maxvalue then
+		calcmax tail head
+      else
+		calcmax tail maxvalue;
+(* *);
+(* B *);
+fun max [] = ~0
+  | max (head::tail) = calcmax tail head;
+(* *);
+max [1,2,3,43,5,6,7,8,9];
+max [1];
+max [];
+max [~1,0,~15];
+(* *);
+(* *);
+(* Question 3 *);
+(* A *);
+fun calcavg [] total length = total / length
+  | calcavg (head::tail) total length = calcavg tail (total+head) (length+1.0);
+(* *);
+(* B *);
+fun avg [] = 0.0
+  | avg list = calcavg list 0.0 0.0;
+(* *);
+avg [1.0,2.0,3.0,2.0,1.0,2.0,3.0];
+avg [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,100.0];
+avg [];
+avg [~1.0,~1.0,~1.0,~2.0];
+(* *);
+(* *);
+(* Question 4 *);
+(* A *);
+fun countoccurances value count [] = (value, count)
+  | countoccurances value count (head::tail) = 
+	if head = value then
+		countoccurances value (count+1) tail
+	else 
+		countoccurances value count tail;
+(* *);
+countoccurances 10 0 [1,2,3,4,5,1,2,3,4,5,6,1,1];
+countoccurances 1 0 [1,2,3,4,5,1,2,3,4,5,6,1,1];
+countoccurances 6 0 [1,2,3,4,5,1,2,3,4,5,6,1,1];
+countoccurances 3 0 [1,2,3,4,5,1,2,3,4,5,6,1,1];
+(* *);
+(* B *);
+(* Note that the order of the frequency is dependant on the order of elements in the list *);
+(* This function does not order by frequency, though for some cases it seems so *);
+fun insertmap (value, frequency) [] = [(value, frequency)]
+  | insertmap (value, frequency) (head::tail) = 
+	if (value = (#1 head)) orelse (frequency < (#2 head)) then
+		head::tail
+	else if value < (#1 head) then
+		(value, frequency)::head::tail
+	else
+		head::(insertmap (value,frequency) (tail)); 
+(* *);		
+insertmap (3,5) [];
+insertmap (3,5) [(1,2)];
+insertmap (3,5) [(1,2), (5,10)];
+insertmap (3,5) [(1,2), (3,5), (5,10)];
+insertmap (2,11) [(1,2), (3,5), (5,10)];
+insertmap (2,3) [(1,2), (4,2), (5,10)];
+(* *);
+(* C *);	
+(* This function constructs and returns the 'frequency map' for a given list using insertmap and countoccurances *);
+(* That is, a list of key-value pairs (tuples) of form value * frequency *);
+fun calcfrequency freqmap [] = freqmap
+  | calcfrequency freqmap (head::tail) = calcfrequency (insertmap (countoccurances head 0 (head::tail)) freqmap) tail;
+(* *);
+calcfrequency [] [1,2,3,4,3,2,3,10];
+calcfrequency [] [10,10,9,9,9,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+(* *);
+(* D *);
+fun separatefrequencies freqlist [] = freqlist
+  | separatefrequencies freqlist ((head:('a*'b))::tail) = separatefrequencies ((#2 head)::freqlist) tail;
+(* *);
+separatefrequencies [] (calcfrequency [] [1,2,3,4,3,2,3,10]);
+separatefrequencies [] (calcfrequency [] [10,10,9,9,9,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+(* *);
+(* E *);
+(* This calculates the highest frequency value for a frequency map *);
+fun maxfrequency freqmap = max (separatefrequencies [] freqmap);
+(* *);
+maxfrequency (calcfrequency [] [10,10,9,9,9,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+(* *);
+(* F *);
+(* Given a frequncy map and the highest frequency within it, *);
+(* this returns a tuple of all modes in the frequency map as per the question specification *);
+fun calcmode modelistin maxfrequencyin [] = (modelistin, maxfrequencyin)
+  | calcmode modelistin maxfrequencyin ((head:'a*''b)::tail) = 
+	let
+		val (modelist, maxfrequency) = calcmode modelistin maxfrequencyin tail
+	in
+		if (#2 head) = maxfrequency then
+			(((#1 head)::modelist), maxfrequency)
+		else
+			(modelist, maxfrequency)
+	end;
+(* *);
+calcmode [] 2 [(1,2)];
+calcmode [] 2 [(1,2),(2,2)];
+calcmode [] 2 [(1,2),(2,2),(3,1)];
+(* *);
+(* G *);
+(* Simply the wrapper class used to pull together the other functions into a cohesive unit *);
+(* Using local declaration so that calcfrequency need only be executed once, not twice *);
+fun modes list = 
+	let 
+		val freqmap = calcfrequency [] list 
+	in 
+		calcmode [] (maxfrequency freqmap) freqmap
+	end;
+(* *);
+modes [1,1,1,1,1,2,2,33,3,3,4];
+modes [1,2,3,4,5];
+modes [1,1,2,2,3,4,5,3];
+modes [];
+modes [~1,~1,1,1,0,0,100,10,2];
+(* *);
+(* End of Answers*);

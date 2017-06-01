@@ -1,0 +1,125 @@
+(* F28PL - Programming Languages *);
+(* Question C (Lists) *);
+(* Tommy Lamb *);
+(* H00217505 *);
+(* *);
+(* *);
+(* Question 1 *);
+fun drop 0 l = l
+  | drop n [] = []
+  | drop n (head::tail) = drop (n-1) tail;
+(* *);
+drop 3 [1,2,3,4,5];
+drop 0 [1,2,3,4,5];
+drop 3 [];
+drop 0 [];
+drop 0 [1,2,3,4,5];
+drop 5 [1,2,3,4,5];
+drop 6 [1,2,3,4,5];
+drop ~1 [];
+drop ~1 [1,2,3,4,5];
+drop ~2 [1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0];
+(* *);
+(* *);
+(* Question 2 *);
+fun take 0 l = []
+  | take n [] = []
+  | take n (head::tail) = [head]@(take (n-1) tail);
+(* "head" must be in square brackets as the concatenation "@" is between two 'a list, not int and 'a list *);
+take 3 ["a","b","c","d","e"];
+take 0 ["a","b","c","d","e"];
+take 5 ["a","b","c","d","e"];
+take 6 ["a","b","c","d","e"];
+take ~1 ["a","b","c","d","e"];
+take 3 [];
+take 0 [];
+(* *);
+(* *);
+(* Question 3 *);
+fun starts [] l2 = true
+  | starts l1 [] = false
+  | starts (head1::tail1) (head2::tail2) =
+  if head1 = head2 then 
+	starts tail1 tail2 
+  else 
+	false;
+starts [1,2,3] [1,2,3,4];
+starts [1,2,3] [1,2,3];
+starts [1,2,3] [1,2];
+starts [2,3,4] [1,2,3,4];
+starts [] [1,2,3,4];
+starts [1,2] [];
+(* For the record: The empty list starts the empty list *);
+starts [] [];
+(* *);
+(* *);
+(* Question 4 *);
+(* The answer to question 3, "fun starts...", is a prerequisite for this function to run*);
+fun contains l1 [] = false
+  | contains [] l2 = true
+  | contains (head1::tail1) (head2::tail2) =
+  if head1 = head2 then
+	starts tail1 tail2
+  else 
+	contains (head1::tail1) tail2;
+(* *);
+contains ["d","e","f"] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains ["a","b","c"] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains ["f","g","h"] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains [] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains ["a","b","z"] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains ["a","b", "c", "d", "e", "f", "g", "h"] [];
+contains ["a","b", "c", "d", "e", "f", "g", "h"] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains ["z","x","y"] ["a","b", "c", "d", "e", "f", "g", "h"];
+contains ["z","x","y"] ["a"];
+contains ["a","b","c"] ["a","b"];
+contains ["a"] ["a","b","c"];
+contains ["a","c","e"] ["a","b", "c", "d", "e", "f", "g", "h"];
+(* *);
+(* *);
+(* Question 5 *);
+(* The answers to question 3, "fun starts...", and question 1, "fun drop...", are prerequisites for this function to run*);
+fun delete l1 [] = []
+  | delete l1 (head2::tail2) =
+  if starts l1 (head2::tail2) then
+	drop (length l1) (head2::tail2)
+  else 
+	([head2]@ (delete l1 tail2));
+(* *);
+delete [3,4,5] [1,2,3,4,5,6];
+delete [1,2,3] [1,2,3,4,5,6];
+delete [4,5,6] [1,2,3,4,5,6];
+delete [2] [1,2,3,4,5,6];
+delete [] [1,2,3,4,5,6];
+delete [] [];
+delete [1,2,3,4,5] [1,2,3];
+delete [1,2,3] [];
+delete [5, 4, 3] [1,2,3,4,5]; 
+(* *);
+(* *);
+(* Question 6 *);
+(* The answers to question 3, "fun starts...", and question 1, "fun drop...", are prerequisites for this function to run*);
+fun deleteAll l1 [] = []
+  | deleteAll [] l2 = l2
+  | deleteAll l1 (head2::tail2) =
+  if starts l1 (head2::tail2) then
+	deleteAll l1 (drop (length l1) (head2::tail2))
+  else 
+	[head2]@(deleteAll l1 (tail2));
+(* *);
+deleteAll [] [];
+deleteAll [1,2,3] [];
+deleteAll [] [1,2,3];
+deleteAll [1,2,3] [1,2];
+deleteAll [1,2,3] [1,2,3,4,5];
+deleteAll [2,3,4] [1,2,3,4,5];
+deleteAll [3,4,5] [1,2,3,4,5];
+deleteAll [4,5,6] [1,2,3,4,5];
+deleteAll [1,2] [1,2,1,2];
+deleteAll [1,2] [1,2,3,1,2];
+deleteAll [2,3] [1,2,3,4,2,3,4];
+deleteAll [1,2,3] [3,2,1,2,3,2,1,2,3];
+deleteAll [2,3] [1,2,2,3,3,4];
+(* *);
+(* End of Answers *);
+
